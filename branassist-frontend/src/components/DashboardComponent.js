@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './DashboardComponent.css'
 import Navbar from './Navbar';
 import ChatBot from './ChatBot';
 import NextAppointmentsCard from './NextAppointmentsCard';
@@ -18,7 +19,7 @@ const DashboardComponent = () => {
             <div className="container mt-5" style={{paddingTop: '100px'}}>
                 <h2>Dashboard</h2>
                 <p>Welcome to the dashboard!</p>
-                <div style={{display: 'flex', gap: '20px'}}>
+                <div className="dashboard-container">
                     <NextAppointmentsCard/>
                     <CalendarViewCard/>
                 </div>
