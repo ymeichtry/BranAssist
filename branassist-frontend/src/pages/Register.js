@@ -3,23 +3,24 @@ import { useNavigate, Link } from 'react-router-dom';
 import AuthService from '../AuthService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const LoginComponent = () => {
+const Register = () => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
+    const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const response = await AuthService.login({ email, password });
-            if (response.data === 'Login successful') {
-                navigate('/dashboard');
-            } else {
-                setMessage('Invalid credentials');
+            const response = await AuthService.register({ firstName, lastName, email, password });
+            setMessage(response.data);
+            if (response.data === 'User registered successfully') {
+                navigate('/login');
             }
         } catch (error) {
-            setMessage('Invalid credentials');
+            setMessage('Registration failed');
         }
     };
 
@@ -28,10 +29,28 @@ const LoginComponent = () => {
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <div className="card">
-                        <div className="card-header">Login Form</div>
+                        <div className="card-header">Registration</div>
                         <div className="card-body">
-                            {message && <div className="alert alert-danger">{message}</div>}
-                            <form onSubmit={handleLogin}>
+                            {message && <div className="alert alert-info">{message}</div>}
+                            <form onSubmit={handleRegister}>
+                                <div className="form-group">
+                                    <label>First Name</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={firstName}
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <label>Last Name</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={lastName}
+                                        onChange={(e) => setLastName(e.target.value)}
+                                    />
+                                </div>
                                 <div className="form-group">
                                     <label>Email</label>
                                     <input
@@ -50,10 +69,10 @@ const LoginComponent = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
-                                <button type="submit" className="btn btn-primary">Login</button>
+                                <button type="submit" className="btn btn-primary">Register</button>
                             </form>
                             <div className="mt-3">
-                                <span>Not registered? <Link to="/register">Register here</Link></span>
+                                <span>Already registered? <Link to="/login">Login here</Link></span>
                             </div>
                         </div>
                     </div>
@@ -63,4 +82,4 @@ const LoginComponent = () => {
     );
 };
 
-export default LoginComponent;
+export default Register;

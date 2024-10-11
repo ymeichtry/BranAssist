@@ -3,24 +3,23 @@ import { useNavigate, Link } from 'react-router-dom';
 import AuthService from '../AuthService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const RegisterComponent = () => {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
-    const handleRegister = async (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await AuthService.register({ firstName, lastName, email, password });
-            setMessage(response.data);
-            if (response.data === 'User registered successfully') {
-                navigate('/login');
+            const response = await AuthService.login({ email, password });
+            if (response.data === 'Login successful') {
+                navigate('/dashboard');
+            } else {
+                setMessage('Invalid credentials');
             }
         } catch (error) {
-            setMessage('Registration failed');
+            setMessage('Invalid credentials');
         }
     };
 
@@ -29,28 +28,10 @@ const RegisterComponent = () => {
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <div className="card">
-                        <div className="card-header">Registration</div>
+                        <div className="card-header">Login Form</div>
                         <div className="card-body">
-                            {message && <div className="alert alert-info">{message}</div>}
-                            <form onSubmit={handleRegister}>
-                                <div className="form-group">
-                                    <label>First Name</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={firstName}
-                                        onChange={(e) => setFirstName(e.target.value)}
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Last Name</label>
-                                    <input
-                                        type="text"
-                                        className="form-control"
-                                        value={lastName}
-                                        onChange={(e) => setLastName(e.target.value)}
-                                    />
-                                </div>
+                            {message && <div className="alert alert-danger">{message}</div>}
+                            <form onSubmit={handleLogin}>
                                 <div className="form-group">
                                     <label>Email</label>
                                     <input
@@ -69,10 +50,10 @@ const RegisterComponent = () => {
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
-                                <button type="submit" className="btn btn-primary">Register</button>
+                                <button type="submit" className="btn btn-primary">Login</button>
                             </form>
                             <div className="mt-3">
-                                <span>Already registered? <Link to="/login">Login here</Link></span>
+                                <span>Not registered? <Link to="/register">Register here</Link></span>
                             </div>
                         </div>
                     </div>
@@ -82,4 +63,4 @@ const RegisterComponent = () => {
     );
 };
 
-export default RegisterComponent;
+export default Login;

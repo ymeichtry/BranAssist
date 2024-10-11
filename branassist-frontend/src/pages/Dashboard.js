@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import './DashboardComponent.css'
-import Navbar from './Navbar';
-import ChatBot from './ChatBot';
-import NextAppointmentsCard from './NextAppointmentsCard';
-import CalendarViewCard from './CalendarViewCard';
+import './Dashboard.css'
+import Navbar from '../components/Navbar';
+import ChatBot from '../components/ChatBot';
+import NextAppointmentsCard from '../components/NextAppointmentsCard';
+import CalendarViewCard from '../components/CalendarViewCard';
 
-const DashboardComponent = () => {
+const Dashboard = () => {
     const [isChatOpen, setIsChatOpen] = useState(false);
 
     const toggleChat = () => {
@@ -55,4 +55,4 @@ const DashboardComponent = () => {
     );
 };
 
-export default DashboardComponent;
+export default Dashboard;
