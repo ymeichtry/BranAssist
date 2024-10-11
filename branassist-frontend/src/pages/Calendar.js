@@ -23,9 +23,10 @@ const CalendarPage = () => {
             start: new Date(2024, 9, 11, 9, 0),
             end: new Date(2024, 9, 11, 10, 0),
         },
-        // more events
+        // Weitere Events
     ];
 
+    // "Next" Button
     const handleNext = () => {
         setCurrentDate((prevDate) => {
             const newDate = new Date(prevDate);
@@ -38,6 +39,7 @@ const CalendarPage = () => {
         });
     };
 
+    // "Back" Button
     const handlePrevious = () => {
         setCurrentDate((prevDate) => {
             const newDate = new Date(prevDate);
@@ -50,33 +52,52 @@ const CalendarPage = () => {
         });
     };
 
+    // "Today" Button
+    const handleToday = () => {
+        setCurrentDate(new Date());
+    };
+
     const switchView = (newView) => {
         setView(newView);
     };
 
     return (
-        <div style={{paddingTop: '100px'}}>
+        <div style={{ paddingTop: '100px' }}>
             <Navbar />
 
             <div className="container" style={{ marginTop: '80px', paddingBottom: '20px' }}>
                 <h3>Kalender</h3>
 
                 <div className="d-flex justify-content-between">
+                    {/* Links: Back, Today, Next Buttons */}
                     <div>
-                        <button className="btn btn-link" onClick={() => switchView('week')}>
-                            Wöchentlich
+                        <button className="btn btn-secondary me-2" onClick={handlePrevious}>
+                            Back
                         </button>
-                        <button className="btn btn-link" onClick={() => switchView('month')}>
-                            Monatlich
-                        </button>
-                    </div>
-                    <div>
-                        <button className="btn btn-secondary" onClick={handlePrevious}>
-                            Vorheriger
+                        <button className="btn btn-secondary me-2" onClick={handleToday}>
+                            Today
                         </button>
                         <button className="btn btn-secondary" onClick={handleNext}>
-                            Nächster
+                            Next
                         </button>
+                    </div>
+
+                    {/* Rechts: Umschalten zwischen Wöchentlich und Monatlich */}
+                    <div>
+                        <div className="btn-group" role="group">
+                            <button
+                                type="button"
+                                className={`btn ${view === 'week' ? 'btn-primary' : 'btn-outline-primary'}`}
+                                onClick={() => switchView('week')}>
+                                Wöchentlich
+                            </button>
+                            <button
+                                type="button"
+                                className={`btn ${view === 'month' ? 'btn-primary' : 'btn-outline-primary'}`}
+                                onClick={() => switchView('month')}>
+                                Monatlich
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -91,6 +112,7 @@ const CalendarPage = () => {
                         view={view}
                         onNavigate={(date) => setCurrentDate(date)}
                         style={{ height: 600 }}
+                        toolbar={false}  // Deaktiviert die default Toolbar mit Tabs
                     />
                 </div>
 
@@ -113,7 +135,7 @@ const CalendarPage = () => {
                         boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
                     }}
                 >
-
+                    Chat
                 </button>
             </div>
         </div>
