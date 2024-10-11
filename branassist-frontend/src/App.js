@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Calendar from './pages/Calendar'
 
 const App = () => {
     return (
@@ -13,6 +14,7 @@ const App = () => {
                     <Route path="/register" element={<Register />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/calendar" element={<Calendar />} />
                     <Route path="/*" element={"404"} />
                 </Routes>
             </div>
