@@ -46,31 +46,50 @@ const CalendarViewCard = () => {
         });
     };
 
+    const handleToday = () => {
+        setCurrentDate(new Date());
+    };
+
     const switchView = (newView) => {
         setView(newView);
     };
 
     return (
-        <div className="card" style={{ width: '100%', padding: '20px' }}>
+        <div className="card" style={{width: '100%', padding: '20px'}}>
             <h5 className="card-title">Kalenderansicht</h5>
             <div className="d-flex justify-content-between">
+                {/* Links: Back, Today, Next Buttons */}
                 <div>
-                    <button className="btn btn-link" onClick={() => switchView('week')}>
-                        Wöchentlich
+                    <button className="btn btn-secondary me-2" onClick={handlePrevious}>
+                        Back
                     </button>
-                    <button className="btn btn-link" onClick={() => switchView('month')}>
-                        Monatlich
-                    </button>
-                </div>
-                <div>
-                    <button className="btn btn-secondary" onClick={handlePrevious}>
-                        Vorheriger
+                    <button className="btn btn-secondary me-2" onClick={handleToday}>
+                        Today
                     </button>
                     <button className="btn btn-secondary" onClick={handleNext}>
-                        Nächster
+                        Next
                     </button>
                 </div>
+
+                {/* Rechts: Umschalten zwischen Wöchentlich und Monatlich */}
+                <div>
+                    <div className="btn-group" role="group">
+                        <button
+                            type="button"
+                            className={`btn ${view === 'week' ? 'btn-primary' : 'btn-outline-primary'}`}
+                            onClick={() => switchView('week')}>
+                            Wöchentlich
+                        </button>
+                        <button
+                            type="button"
+                            className={`btn ${view === 'month' ? 'btn-primary' : 'btn-outline-primary'}`}
+                            onClick={() => switchView('month')}>
+                            Monatlich
+                        </button>
+                    </div>
+                </div>
             </div>
+
             <div className="calendar-view mt-4">
                 <Calendar
                     localizer={localizer}
@@ -81,7 +100,8 @@ const CalendarViewCard = () => {
                     date={currentDate}
                     view={view}
                     onNavigate={(date) => setCurrentDate(date)}
-                    style={{ height: 500 }}
+                    style={{height: 600}}
+                    toolbar={false}  // Deaktiviert die default Toolbar mit Tabs
                 />
             </div>
         </div>
