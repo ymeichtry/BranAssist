@@ -4,6 +4,7 @@ import ChatBot from '../components/ChatBot';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { Modal, Button, Form } from 'react-bootstrap';  // Import für Modal und Form
 
 const localizer = momentLocalizer(moment);
 
@@ -11,20 +12,23 @@ const CalendarPage = () => {
     const [view, setView] = useState('week'); // 'week' or 'month'
     const [currentDate, setCurrentDate] = useState(new Date());
     const [chatOpen, setChatOpen] = useState(false); // Zustand für Chatbot-Öffnung
-
-    const events = [
+    const [modalOpen, setModalOpen] = useState(false); // Zustand für den Modal
+    const [newEvent, setNewEvent] = useState({ title: '', description: '', start: '', end: '' }); // Event state mit Description
+    const [events, setEvents] = useState([
         {
             title: 'Client Meeting',
+            description: 'Meeting to discuss project updates',
             start: new Date(2024, 9, 13, 14, 0),
             end: new Date(2024, 9, 13, 15, 0),
         },
         {
             title: 'Project Deadline',
+            description: 'Final deadline for project submission',
             start: new Date(2024, 9, 11, 9, 0),
             end: new Date(2024, 9, 11, 10, 0),
         },
         // Weitere Events
-    ];
+    ]);
 
     // "Next" Button
     const handleNext = () => {
@@ -61,6 +65,34 @@ const CalendarPage = () => {
         setView(newView);
     };
 
+    // Öffnen des Modals für einen neuen Event
+    const handleOpenModal = () => {
+        setModalOpen(true);
+    };
+
+    // Schließen des Modals
+    const handleCloseModal = () => {
+        setModalOpen(false);
+    };
+
+    // Neuen Event hinzufügen
+    const handleAddEvent = () => {
+        const newEventToAdd = {
+            title: newEvent.title,
+            description: newEvent.description,  // Beschreibung hinzufügen
+            start: new Date(newEvent.start),
+            end: new Date(newEvent.end),
+        };
+        setEvents([...events, newEventToAdd]);
+        handleCloseModal(); // Modal schließen nach dem Hinzufügen
+    };
+
+    // Handhabung der Eingaben
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setNewEvent((prev) => ({ ...prev, [name]: value }));
+    };
+
     return (
         <div style={{ paddingTop: '100px' }}>
             <Navbar />
@@ -82,9 +114,9 @@ const CalendarPage = () => {
                         </button>
                     </div>
 
-                    {/* Rechts: Umschalten zwischen Wöchentlich und Monatlich */}
-                    <div>
-                        <div className="btn-group" role="group">
+                    {/* Rechts: Umschalten zwischen Wöchentlich, Monatlich, und "New Entry" Button */}
+                    <div className="d-flex align-items-center">
+                        <div className="btn-group me-3" role="group">
                             <button
                                 type="button"
                                 className={`btn ${view === 'week' ? 'btn-primary' : 'btn-outline-primary'}`}
@@ -98,6 +130,11 @@ const CalendarPage = () => {
                                 Monatlich
                             </button>
                         </div>
+
+                        {/* "New Entry" Button */}
+                        <button className="btn btn-success" onClick={handleOpenModal}>
+                            New Entry
+                        </button>
                     </div>
                 </div>
 
@@ -115,6 +152,64 @@ const CalendarPage = () => {
                         toolbar={false}  // Deaktiviert die default Toolbar mit Tabs
                     />
                 </div>
+
+                {/* Modal für das Erstellen eines neuen Events */}
+                <Modal show={modalOpen} onHide={handleCloseModal}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Neuen Kalendereintrag erstellen</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <Form>
+                            <Form.Group controlId="formEventTitle">
+                                <Form.Label>Titel</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    name="title"
+                                    value={newEvent.title}
+                                    onChange={handleChange}
+                                    placeholder="Event Titel"
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formEventDescription" className="mt-3">
+                                <Form.Label>Beschreibung</Form.Label>
+                                <Form.Control
+                                    as="textarea"
+                                    rows={3}
+                                    name="description"
+                                    value={newEvent.description}
+                                    onChange={handleChange}
+                                    placeholder="Beschreibung des Events"
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formEventStart" className="mt-3">
+                                <Form.Label>Startdatum und Zeit</Form.Label>
+                                <Form.Control
+                                    type="datetime-local"
+                                    name="start"
+                                    value={newEvent.start}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                            <Form.Group controlId="formEventEnd" className="mt-3">
+                                <Form.Label>Enddatum und Zeit</Form.Label>
+                                <Form.Control
+                                    type="datetime-local"
+                                    name="end"
+                                    value={newEvent.end}
+                                    onChange={handleChange}
+                                />
+                            </Form.Group>
+                        </Form>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleCloseModal}>
+                            Abbrechen
+                        </Button>
+                        <Button variant="primary" onClick={handleAddEvent}>
+                            Speichern
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
 
                 {chatOpen && (
                     <ChatBot onClose={() => setChatOpen(false)} />
