@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import AuthService from '../AuthService';
+import Service from '../Service';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
@@ -12,7 +12,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await AuthService.login({ email, password });
+            const response = await Service.login({ email, password });
             if (response.data === 'Login successful') {
                 navigate('/dashboard');
             } else {

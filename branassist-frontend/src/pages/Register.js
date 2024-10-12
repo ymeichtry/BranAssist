@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import AuthService from '../AuthService';
+import Service from '../Service';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Register = () => {
@@ -14,7 +14,7 @@ const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const response = await AuthService.register({ firstName, lastName, email, password });
+            const response = await Service.register({ firstName, lastName, email, password });
             setMessage(response.data);
             if (response.data === 'User registered successfully') {
                 navigate('/login');
