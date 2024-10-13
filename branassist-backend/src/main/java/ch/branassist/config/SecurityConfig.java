@@ -46,8 +46,18 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
+                .cors() // CORS aktivieren
+                .and()
                 .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests.requestMatchers("/api/register", "/api/login").permitAll()
+                        authorizeRequests
+                                .requestMatchers(
+                                        "/api/user/register",
+                                        "/api/user/login",
+                                        "/api/user/current",
+                                        "/api/calendar/entries",
+                                        "/api/calendar/add",
+                                        "/api/calendar/entry/{id}"
+                                ).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .httpBasic();
