@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import Service from '../Service';
+import Service from '../service/UserService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Register = () => {
+    const [userName, setUserName] = useState('')
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ const Register = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         try {
-            const response = await Service.register({ firstName, lastName, email, password });
+            const response = await Service.register({ userName, firstName, lastName, email, password });
             setMessage(response.data);
             if (response.data === 'User registered successfully') {
                 navigate('/login');
@@ -33,6 +34,15 @@ const Register = () => {
                         <div className="card-body">
                             {message && <div className="alert alert-info">{message}</div>}
                             <form onSubmit={handleRegister}>
+                                <div className="form-group">
+                                    <label>User Name</label>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={userName}
+                                        onChange={(e) => setUserName(e.target.value)}
+                                    />
+                                </div>
                                 <div className="form-group">
                                     <label>First Name</label>
                                     <input

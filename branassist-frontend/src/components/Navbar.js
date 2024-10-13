@@ -1,7 +1,27 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import UserService from '../service/UserService';  // Importiere den Service
 
 const Navbar = () => {
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
+
+    // Benutzerdaten abrufen, wenn die Komponente geladen wird
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await UserService.getCurrentUser();  // Anfrage ans Backend
+                const { username, email } = response.data;  // Extrahiere Daten aus der Antwort
+                setUsername(username);
+                setEmail(email);
+            } catch (error) {
+                console.error("Fehler beim Abrufen der Benutzerdaten: ", error);
+            }
+        };
+
+        fetchUserData();  // Funktion aufrufen
+    }, []);  // Läuft nur beim ersten Rendern
+
     return (
         <header
             className="bg-dark text-white p-3"
@@ -38,7 +58,7 @@ const Navbar = () => {
                                 alt="User Icon"
                                 className="rounded-circle"
                             />{' '}
-                            @ymeichtry
+                            @{username || 'Guest'}
                         </a>
                         <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li className="px-3 py-2">
@@ -49,8 +69,8 @@ const Navbar = () => {
                                         className="rounded-circle"
                                     />
                                     <div className="ms-3">
-                                        <h6 className="mb-0">@ymeichtry</h6>
-                                        <small>test@gmail.com</small>
+                                        <h6 className="mb-0">@{username || 'Guest'}</h6>
+                                        <small>{email || 'No Email'}</small>
                                     </div>
                                 </div>
                             </li>

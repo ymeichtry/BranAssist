@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import Service from '../Service';
+import Service from '../service/UserService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
@@ -14,6 +14,7 @@ const Login = () => {
         try {
             const response = await Service.login({ email, password });
             if (response.data === 'Login successful') {
+                localStorage.setItem('token', response.data.token);
                 navigate('/dashboard');
             } else {
                 setMessage('Invalid credentials');
