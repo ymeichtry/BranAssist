@@ -26,6 +26,7 @@ public class CalendarEntryController {
     @PostMapping("/add")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CalendarEntry> addCalendarEntry(@RequestBody CalendarEntry calendarEntry) {
+        System.out.println("Received CalendarEntry: " + calendarEntry.toString());
         CalendarEntry savedEntry = calendarEntryService.addCalendarEntry(calendarEntry);
         return ResponseEntity.ok(savedEntry);
     }
