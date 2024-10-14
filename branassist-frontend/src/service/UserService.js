@@ -27,26 +27,24 @@ class UserService {
     }
 
     getCurrentUser() {
-        const token = localStorage.getItem('token'); // Token abrufen
+        const token = localStorage.getItem('token');
         if (!token) {
             console.error('No token found');
             return Promise.reject(new Error('No token available'));
         }
 
-        console.log("Fetching current user with token:", token); // Log the token being used
-
         return axios.get(`${API_BASE_URL}/current`, {
             headers: {
-                Authorization: `Bearer ${token}` // Setze den Authorization-Header
+                Authorization: `Bearer ${token}`
             }
         })
             .then(response => {
-                console.log("User data fetched successfully!", response.data); // Log the user data
-                return response;  // Rückgabe des Response-Objekts
+                console.log("User data fetched successfully!", response.data);
+                return response;
             })
             .catch(error => {
-                console.error('Error fetching user data', error);
-                throw error;  // Fehler weiterwerfen
+                console.log('Error fetching die super duper user data', error);
+                throw error;
             });
     }
 }

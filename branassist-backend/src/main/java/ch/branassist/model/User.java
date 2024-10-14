@@ -14,7 +14,6 @@ public class User {
     private String lastName;
     private String email;
     private String password;
-    private String role;
 
     // Getters and Setters
 
@@ -65,13 +64,4 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
 }

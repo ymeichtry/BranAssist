@@ -10,17 +10,20 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ch.branassist.service.JwtService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
     private final UserServiceImpl userService;
+    private final JwtService jwtService;
 
     public SecurityConfig(UserServiceImpl userService) {
         this.userService = userService;
+        this.jwtService = new JwtService();
     }
 
     @Bean
@@ -33,7 +36,6 @@ public class SecurityConfig {
             return org.springframework.security.core.userdetails.User
                     .withUsername(user.getEmail())
                     .password(user.getPassword())
-                    .roles(user.getRole())
                     .build();
         };
     }
@@ -45,8 +47,9 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
         http.csrf(csrf -> csrf.disable())
-                .cors() // CORS aktivieren
+                .cors()
                 .and()
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
@@ -60,6 +63,7 @@ public class SecurityConfig {
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )
+                .addFilterBefore(new JwtAuthenticationFilter(jwtService, userDetailsService()), UsernamePasswordAuthenticationFilter.class) // JWT Filter hinzufügen
                 .httpBasic();
         return http.build();
     }
