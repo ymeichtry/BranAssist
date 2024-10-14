@@ -69,7 +69,11 @@
 			<artifactId>jjwt</artifactId>
 			<version>0.9.1</version> <!-- Achte darauf, die aktuelle Version zu verwenden -->
 		</dependency>
-
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version> <!-- Stelle sicher, dass du die neueste Version verwendest -->
+		</dependency>
 	</dependencies>
 
 	<build>
