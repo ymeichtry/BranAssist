@@ -14,45 +14,37 @@ import ch.branassist.service.JwtService;
 import java.security.Principal;
 
 @RestController
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/user")
 public class UserController {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final JwtService jwtService;  // Für JWT Token Erstellung
 
     @Autowired
-    public UserController(UserService userService, PasswordEncoder passwordEncoder, JwtService jwtService) {
+    public UserController(UserService userService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
-        this.jwtService = jwtService;
     }
 
-    // Registrierung
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody User user) {
+    public String register(@RequestBody User user) {
         User existingUser = userService.findByEmail(user.getEmail());
         if (existingUser != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists");
+            return "Email already exists";
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));  // Passwort verschlüsseln
         userService.saveUser(user);
-        return ResponseEntity.ok("User registered successfully");
+        return "User registered successfully";
     }
 
-    // Login
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody User user) {
+    public String login(@RequestBody User user) {
         User existingUser = userService.findByEmail(user.getEmail());
         if (existingUser != null && passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
-            // JWT Token erstellen
-            String token = JwtService.generateToken(existingUser.getEmail());
-            AuthResponse authResponse = new AuthResponse(token);
-            return ResponseEntity.ok(authResponse);
-            // Rückgabe des JWT Tokens
+            return "Login successful";
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Invalid credentials"));
+            return "Invalid credentials";
         }
     }
 
