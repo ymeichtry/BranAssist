@@ -39,12 +39,14 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String login(@RequestBody User user) {
+    public ResponseEntity<AuthResponse> login(@RequestBody User user) {
         User existingUser = userService.findByEmail(user.getEmail());
         if (existingUser != null && passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
-            return "Login successful";
+            String token = JwtService.generateToken(existingUser.getEmail());  // Token mit JWT Service erstellen
+            AuthResponse authResponse = new AuthResponse(token);
+            return ResponseEntity.ok(authResponse);
         } else {
-            return "Invalid credentials";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthResponse("Invalid credentials"));
         }
     }
 

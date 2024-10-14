@@ -13,8 +13,9 @@ const Login = () => {
         e.preventDefault();
         try {
             const response = await Service.login({ email, password });
-            if (response.data === 'Login successful') {
-                localStorage.setItem('token', response.data.token);
+            if (response.data && response.data.token) {
+                const token = response.data.token;
+                localStorage.setItem('token', token);
                 navigate('/dashboard');
             } else {
                 setMessage('Invalid credentials');
