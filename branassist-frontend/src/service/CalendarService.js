@@ -5,6 +5,7 @@ const API_BASE_URL = "http://localhost:8080/api/calendar";
 class CalendarService {
     // Add a new Calendar Entry
     addCalendarEntry(entry) {
+        console.log(entry)
         return axios.post(`${API_BASE_URL}/add`, entry);
     }
 

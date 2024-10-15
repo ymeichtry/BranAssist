@@ -19,12 +19,16 @@ const CalendarPage = () => {
     const [newEvent, setNewEvent] = useState({ title: '', description: '', start: '', end: '' });
     const [events, setEvents] = useState([]);
 
-    // Daten von der API abrufen
     useEffect(() => {
         const fetchEvents = async () => {
             try {
                 const response = await Service.getAllCalendarEntries();
-                setEvents(response.data);
+                const formattedEvents = response.data.map(event => ({
+                    ...event,
+                    start: moment.utc(event.start).local().toDate(),  // Von UTC nach lokal umwandeln
+                    end: moment.utc(event.end).local().toDate(),      // Von UTC nach lokal umwandeln
+                }));
+                setEvents(formattedEvents);
             } catch (error) {
                 console.error("Error fetching events:", error);
             }
@@ -32,13 +36,18 @@ const CalendarPage = () => {
         fetchEvents();
     }, []);
 
-    // Neuen Event zur API hinzufügen
     const handleAddEvent = async () => {
+        const startDate = moment(newEvent.start).toDate();
+        const endDate = moment(newEvent.end).toDate();
+
+        const startDateUTC = moment(startDate).utc().toDate();
+        const endDateUTC = moment(endDate).utc().toDate();
+
         const newEventToAdd = {
             title: newEvent.title,
             description: newEvent.description,
-            start: new Date(newEvent.start),
-            end: new Date(newEvent.end),
+            start: startDateUTC,
+            end: endDateUTC,
         };
 
         try {
@@ -51,7 +60,6 @@ const CalendarPage = () => {
         }
     };
 
-    // Event bearbeiten
     const handleEditEvent = async () => {
         const updatedEvent = {
             ...selectedEvent,
@@ -70,7 +78,6 @@ const CalendarPage = () => {
         }
     };
 
-    // Event löschen
     const handleDeleteEvent = async (id) => {
         try {
             await Service.deleteCalendarEntry(id);

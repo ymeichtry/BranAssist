@@ -24,16 +24,13 @@ public class CalendarEntryController {
 
     // Create a new Calendar Entry
     @PostMapping("/add")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<CalendarEntry> addCalendarEntry(@RequestBody CalendarEntry calendarEntry) {
-        System.out.println("Received CalendarEntry: " + calendarEntry.toString());
         CalendarEntry savedEntry = calendarEntryService.addCalendarEntry(calendarEntry);
         return ResponseEntity.ok(savedEntry);
     }
 
     // Get all Calendar Entries
     @GetMapping("/entries")
-    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<List<CalendarEntry>> getAllCalendarEntries() {
         List<CalendarEntry> entries = calendarEntryService.getAllCalendarEntries();
         return ResponseEntity.ok(entries);
@@ -60,8 +57,8 @@ public class CalendarEntryController {
         if (entry != null) {
             entry.setTitle(updatedEntry.getTitle());
             entry.setDescription(updatedEntry.getDescription());
-            entry.setStartTime(updatedEntry.getStartTime());
-            entry.setEndTime(updatedEntry.getEndTime());
+            entry.setStart(updatedEntry.getStart());
+            entry.setEnd(updatedEntry.getEnd());
             CalendarEntry savedEntry = calendarEntryService.addCalendarEntry(entry);
             return ResponseEntity.ok(savedEntry);
         } else {

@@ -1,7 +1,7 @@
 package ch.branassist.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.persistence.Id;
 import java.time.LocalDateTime;
 
 @Entity
@@ -9,16 +9,14 @@ import java.time.LocalDateTime;
 public class CalendarEntry {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // oder GenerationType.AUTO
     private Long id;
     private String title;
     private String description;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime startTime;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-    private LocalDateTime endTime;
+    private LocalDateTime start;
+    private LocalDateTime  end;
 
-    // Getters and Setters
+    // Getter und Setter
     public Long getId() {
         return id;
     }
@@ -43,19 +41,19 @@ public class CalendarEntry {
         this.description = description;
     }
 
-    public LocalDateTime getStartTime() {
-        return startTime;
+    public LocalDateTime  getStart() {
+        return start;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
+    public void setStart(LocalDateTime  start) {
+        this.start = start;
     }
 
-    public LocalDateTime getEndTime() {
-        return endTime;
+    public LocalDateTime  getEnd() {
+        return end;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
-        this.endTime = endTime;
+    public void setEnd(LocalDateTime  end) {
+        this.end = end;
     }
 }
