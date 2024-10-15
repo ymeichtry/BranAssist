@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 
 const ChatBot = ({ onClose }) => {
     const [messages, setMessages] = useState([{ sender: 'bot', text: 'Welcome to the chat!' }]);
     const [inputMessage, setInputMessage] = useState('');
+    const [isScrolledUp, setIsScrolledUp] = useState(false);
+    const chatContentRef = useRef(null);  // Ref für den Chat-Inhalt
 
     // Nachricht senden Funktion
     const handleSendMessage = async () => {
@@ -26,7 +28,28 @@ const ChatBot = ({ onClose }) => {
         return axios.post('https://example-chatbot-api.com/sendMessage', { message });
     };
 
-    // "Enter" Taste Funktion zum Senden
+    // Scrollt automatisch ans Ende des Chats
+    const scrollToBottom = () => {
+        if (chatContentRef.current) {
+            chatContentRef.current.scrollTop = chatContentRef.current.scrollHeight;
+        }
+        setIsScrolledUp(false);  // Button verstecken, wenn man wieder unten ist
+    };
+
+    // Automatisch nach unten scrollen, wenn neue Nachrichten hinzukommen
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    // Event, wenn der Benutzer scrollt
+    const handleScroll = () => {
+        if (chatContentRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = chatContentRef.current;
+            setIsScrolledUp(scrollTop + clientHeight < scrollHeight - 50);  // Button anzeigen, wenn der Benutzer hochscrollt
+        }
+    };
+
+    // "Enter"-Taste zum Senden
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
@@ -84,6 +107,8 @@ const ChatBot = ({ onClose }) => {
                     border: '1px solid #ddd',
                     marginBottom: '10px',
                 }}
+                ref={chatContentRef}
+                onScroll={handleScroll}  // Scroll-Event
             >
                 {messages.map((msg, index) => (
                     <p
@@ -98,6 +123,29 @@ const ChatBot = ({ onClose }) => {
                     </p>
                 ))}
             </div>
+
+            {/* Button, um wieder nach unten zu scrollen */}
+            {isScrolledUp && (
+                <button
+                    onClick={scrollToBottom}
+                    style={{
+                        position: 'absolute',
+                        bottom: '70px',
+                        right: '30px',
+                        backgroundColor: '#000',
+                        color: '#fff',
+                        borderRadius: '50%',
+                        width: '40px',
+                        height: '40px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                    }}
+                >
+                    ↓
+                </button>
+            )}
 
             {/* Chat Eingabe */}
             <div className="chat-input" style={{ display: 'flex', alignItems: 'center' }}>
