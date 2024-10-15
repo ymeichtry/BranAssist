@@ -1,45 +1,36 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Nutze Axios für API-Anfragen, wenn du einen externen KI-Service nutzt.
+import axios from 'axios';
 
 const ChatBot = ({ onClose }) => {
     const [messages, setMessages] = useState([{ sender: 'bot', text: 'Welcome to the chat!' }]);
     const [inputMessage, setInputMessage] = useState('');
 
-    // Funktion, um eine Nachricht zu senden
+    // Nachricht senden Funktion
     const handleSendMessage = async () => {
         if (!inputMessage.trim()) return;
 
-        // Nachricht des Benutzers zur Liste der Nachrichten hinzufügen
         const newMessage = { sender: 'user', text: inputMessage };
         setMessages([...messages, newMessage]);
-
-        // Leeres Eingabefeld nach dem Senden
         setInputMessage('');
 
         try {
-            // Hier würdest du die Nachricht an die KI senden (z.B. via API)
-            const response = await sendMessageToChatBot(inputMessage); // Deine Funktion zur Kommunikation mit KI
-
-            // Antwort der KI zur Liste der Nachrichten hinzufügen
-            const botResponse = { sender: 'bot', text: response.data }; // Hier wird die Antwort simuliert
+            const response = await sendMessageToChatBot(inputMessage);
+            const botResponse = { sender: 'bot', text: response.data };
             setMessages((prevMessages) => [...prevMessages, botResponse]);
         } catch (error) {
             console.error('Error sending message:', error);
         }
     };
 
-    // Beispiel: Funktion, um mit einem Backend zu kommunizieren (mit KI-Integration)
     const sendMessageToChatBot = async (message) => {
-        // Hier solltest du deinen Backend-API-Aufruf einfügen
-        // Beispiel für OpenAI API Integration (ohne Authentifizierung)
         return axios.post('https://example-chatbot-api.com/sendMessage', { message });
     };
 
-    // Hinzufügen der "Enter"-Taste zum Senden der Nachricht
+    // "Enter" Taste Funktion zum Senden
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
             event.preventDefault();
-            handleSendMessage();  // Nachricht senden, wenn "Enter" gedrückt wird
+            handleSendMessage();
         }
     };
 
@@ -53,7 +44,7 @@ const ChatBot = ({ onClose }) => {
                 zIndex: 1000,
                 width: '400px',
                 maxWidth: '90%',
-                height: '500px',
+                height: 'calc(100vh - 138px)',
                 backgroundColor: 'white',
                 borderRadius: '10px',
                 boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
@@ -114,7 +105,7 @@ const ChatBot = ({ onClose }) => {
                     type="text"
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
-                    onKeyPress={handleKeyPress}  // Fügt die Enter-Taste als Auslöser hinzu
+                    onKeyPress={handleKeyPress}  // "Enter"-Taste als Trigger
                     placeholder="Type a message..."
                     style={{
                         flex: 1,
