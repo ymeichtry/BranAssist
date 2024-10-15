@@ -1,34 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { useNavigate } from 'react-router-dom';
+import Service from '../service/CalendarService';
 
 const localizer = momentLocalizer(moment);
 
 const CalendarViewCard = () => {
-    const [view, setView] = useState('week'); // 'week' or 'month'
+    const [view, setView] = useState('week');
     const [currentDate, setCurrentDate] = useState(new Date());
-    const events = [
-        {
-            title: 'Client Meeting',
-            start: new Date(2024, 9, 13, 14, 0),
-            end: new Date(2024, 9, 13, 15, 0),
-        },
-        {
-            title: 'Project Deadline',
-            start: new Date(2024, 9, 11, 9, 0),
-            end: new Date(2024, 9, 11, 10, 0),
-        },
-        // Weitere Events können hier hinzugefügt werden
-    ];
+    const [events, setEvents] = useState([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchEvents = async () => {
+            try {
+                const response = await Service.getAllCalendarEntries();
+                const formattedEvents = response.data.map(event => ({
+                    ...event,
+                    start: moment.utc(event.start).local().toDate(),
+                    end: moment.utc(event.end).local().toDate(),
+                }));
+                setEvents(formattedEvents);
+            } catch (error) {
+                console.error('Fehler beim Abrufen der Events:', error);
+            }
+        };
+
+        fetchEvents();
+    }, []);
 
     const handleNext = () => {
         setCurrentDate((prevDate) => {
             const newDate = new Date(prevDate);
             if (view === 'week') {
                 newDate.setDate(newDate.getDate() + 7);
-            } else {
+            } else if (view === 'month') {
                 newDate.setMonth(newDate.getMonth() + 1);
+            } else if (view === 'day') {
+                newDate.setDate(newDate.getDate() + 1);
             }
             return newDate;
         });
@@ -39,8 +50,10 @@ const CalendarViewCard = () => {
             const newDate = new Date(prevDate);
             if (view === 'week') {
                 newDate.setDate(newDate.getDate() - 7);
-            } else {
+            } else if (view === 'month') {
                 newDate.setMonth(newDate.getMonth() - 1);
+            } else if (view === 'day') {
+                newDate.setDate(newDate.getDate() - 1);
             }
             return newDate;
         });
@@ -54,11 +67,14 @@ const CalendarViewCard = () => {
         setView(newView);
     };
 
+    const handleNavigateToCalendar = () => {
+        navigate('/calendar');
+    };
+
     return (
-        <div className="card" style={{width: '100%', padding: '20px'}}>
-            <h5 className="card-title">Kalenderansicht</h5>
+        <div className="card" style={{ width: '100%', padding: '20px' }}>
+            <h5 className="card-title">Calendar</h5>
             <div className="d-flex justify-content-between">
-                {/* Links: Back, Today, Next Buttons */}
                 <div>
                     <button className="btn btn-secondary me-2" onClick={handlePrevious}>
                         Back
@@ -71,22 +87,32 @@ const CalendarViewCard = () => {
                     </button>
                 </div>
 
-                {/* Rechts: Umschalten zwischen Wöchentlich und Monatlich */}
                 <div>
                     <div className="btn-group" role="group">
                         <button
                             type="button"
+                            className={`btn ${view === 'day' ? 'btn-primary' : 'btn-outline-primary'}`}
+                            onClick={() => switchView('day')}>
+                            Day
+                        </button>
+                        <button
+                            type="button"
                             className={`btn ${view === 'week' ? 'btn-primary' : 'btn-outline-primary'}`}
                             onClick={() => switchView('week')}>
-                            Wöchentlich
+                            Week
                         </button>
                         <button
                             type="button"
                             className={`btn ${view === 'month' ? 'btn-primary' : 'btn-outline-primary'}`}
                             onClick={() => switchView('month')}>
-                            Monatlich
+                            Month
                         </button>
                     </div>
+                    <button
+                        className="btn btn-success ms-2"
+                        onClick={handleNavigateToCalendar}>
+                        Extend
+                    </button>
                 </div>
             </div>
 
@@ -100,8 +126,8 @@ const CalendarViewCard = () => {
                     date={currentDate}
                     view={view}
                     onNavigate={(date) => setCurrentDate(date)}
-                    style={{height: 600}}
-                    toolbar={false}  // Deaktiviert die default Toolbar mit Tabs
+                    style={{ height: 600 }}
+                    toolbar={false}
                 />
             </div>
         </div>
