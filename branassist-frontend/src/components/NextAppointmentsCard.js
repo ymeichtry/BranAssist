@@ -12,14 +12,18 @@ const NextAppointmentsCard = () => {
                 const response = await CalendarService.getAllCalendarEntries();
                 const data = response.data;
 
-                const formattedAppointments = data.map(event => ({
-                    label: event.title,
-                    date: new Date(event.start).toLocaleDateString(),
-                    startTime: new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                    endTime: new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                }));
+                const now = Date.now();
 
-                setAppointments(formattedAppointments);
+                const futureAppointments = data
+                    .filter(event => new Date(event.end).getTime() > now)
+                    .map(event => ({
+                        label: event.title,
+                        date: new Date(event.start).toLocaleDateString(),
+                        startTime: new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        endTime: new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                    }));
+
+                setAppointments(futureAppointments);
             } catch (error) {
                 console.error('Fehler beim Abrufen der Termine:', error);
             }
@@ -46,7 +50,7 @@ const NextAppointmentsCard = () => {
     return (
         <div className="card" style={{ width: '500px', height: '500px', padding: '20px', display: 'flex', flexDirection: 'column' }}>
             <h5 className="card-title">Next appointments</h5>
-            <div style={{ flex: 1 }}>
+            <div style={{ flex: 1, overflowY: 'auto' }}>
                 {currentAppointments.length > 0 ? (
                     currentAppointments.map((appointment, index) => (
                         <div key={index}>
@@ -58,7 +62,7 @@ const NextAppointmentsCard = () => {
                                     <span>{appointment.startTime} - {appointment.endTime}</span>
                                 </span>
                             </p>
-                            {index < currentAppointments.length -1 && <hr />}
+                            {index < currentAppointments.length - 1 && <hr />}
                         </div>
                     ))
                 ) : (
@@ -67,7 +71,7 @@ const NextAppointmentsCard = () => {
             </div>
             <div className="d-flex justify-content-between align-items-center mt-3">
                 <button className="btn btn-secondary" onClick={handlePrevious} disabled={currentPage === 0}>
-                    &lt; {/* Left arrow */}
+                    &lt;
                 </button>
                 <div className="d-flex align-items-center">
                     {Array.from({ length: totalPages }).map((_, index) => (
@@ -81,7 +85,7 @@ const NextAppointmentsCard = () => {
                     ))}
                 </div>
                 <button className="btn btn-secondary" onClick={handleNext} disabled={currentPage >= totalPages - 1}>
-                    &gt; {/* Right arrow */}
+                    &gt;
                 </button>
             </div>
         </div>
