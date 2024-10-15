@@ -142,17 +142,24 @@ const CalendarPage = () => {
                         <div className="btn-group me-3" role="group">
                             <button
                                 type="button"
+                                className={`btn ${view === 'day' ? 'btn-primary' : 'btn-outline-primary'}`}
+                                onClick={() => setView('day')}>
+                                Day
+                            </button>
+                            <button
+                                type="button"
                                 className={`btn ${view === 'week' ? 'btn-primary' : 'btn-outline-primary'}`}
                                 onClick={() => setView('week')}>
-                                Wöchentlich
+                                Week
                             </button>
                             <button
                                 type="button"
                                 className={`btn ${view === 'month' ? 'btn-primary' : 'btn-outline-primary'}`}
                                 onClick={() => setView('month')}>
-                                Monatlich
+                                Month
                             </button>
                         </div>
+
                         <button className="btn btn-success" onClick={() => setModalOpen(true)}>
                             New Entry
                         </button>
@@ -165,10 +172,11 @@ const CalendarPage = () => {
                         events={events}
                         startAccessor="start"
                         endAccessor="end"
-                        defaultView={view}
+                        view={view}
                         date={currentDate}
-                        style={{ height: 600 }}
+                        style={{height: 600}}
                         onSelectEvent={handleEventClick}
+                        onView={(newView) => setView(newView)}
                         toolbar={false}
                     />
                 </div>
