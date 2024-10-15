@@ -39,7 +39,6 @@ class UserService {
             }
         })
             .then(response => {
-                console.log("User data fetched successfully!", response.data);
                 return response;
             })
             .catch(error => {
