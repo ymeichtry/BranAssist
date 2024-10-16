@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import AuthService from '../AuthService';
+import Service from '../service/UserService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const LoginComponent = () => {
+const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
@@ -12,8 +12,10 @@ const LoginComponent = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await AuthService.login({ email, password });
-            if (response.data === 'Login successful') {
+            const response = await Service.login({ email, password });
+            if (response.data && response.data.token) {
+                const token = response.data.token;
+                localStorage.setItem('token', token);
                 navigate('/dashboard');
             } else {
                 setMessage('Invalid credentials');
@@ -63,4 +65,4 @@ const LoginComponent = () => {
     );
 };
 
-export default LoginComponent;
+export default Login;

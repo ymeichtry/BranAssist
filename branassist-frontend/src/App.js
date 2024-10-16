@@ -1,18 +1,23 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import RegisterComponent from './components/RegisterComponent';
-import LoginComponent from './components/LoginComponent';
-import DashboardComponent from './components/DashboardComponent';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Calendar from './pages/Calendar'
+import Profile from "./pages/Profile";
 
 const App = () => {
     return (
         <Router>
-            <div className="container">
+            <div>
                 <Routes>
-                    <Route path="/" element={<LoginComponent />} />
-                    <Route path="/register" element={<RegisterComponent />} />
-                    <Route path="/login" element={<LoginComponent />} />
-                    <Route path="/dashboard" element={<DashboardComponent />} />
+                    <Route path="/" element={<Dashboard />} />
+                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/*" element={"404"} />
                 </Routes>
             </div>
         </Router>
