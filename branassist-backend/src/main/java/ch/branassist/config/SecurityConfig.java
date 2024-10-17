@@ -59,7 +59,8 @@ public class SecurityConfig {
                                         "/api/user/current",
                                         "/api/calendar/entries",
                                         "/api/calendar/add",
-                                        "/api/calendar/entry/{id}"
+                                        "/api/calendar/entry/{id}",
+                                        "/api/chatbot/message"
                                 ).permitAll()
                                 .anyRequest().authenticated()
                 )

@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
-import axios from 'axios';
+import ChatBotService from "../service/ChatBotService";
 
 const ChatBot = ({ onClose }) => {
     const [messages, setMessages] = useState([{ sender: 'bot', text: 'Welcome to the chat!' }]);
     const [inputMessage, setInputMessage] = useState('');
     const [isScrolledUp, setIsScrolledUp] = useState(false);
-    const chatContentRef = useRef(null);  // Ref für den Chat-Inhalt
+    const chatContentRef = useRef(null);
 
     // Nachricht senden Funktion
     const handleSendMessage = async () => {
@@ -16,16 +16,13 @@ const ChatBot = ({ onClose }) => {
         setInputMessage('');
 
         try {
-            const response = await sendMessageToChatBot(inputMessage);
+            // Verwende den ChatBotService, um die Nachricht zu senden
+            const response = await ChatBotService.sendMessage(inputMessage);
             const botResponse = { sender: 'bot', text: response.data };
             setMessages((prevMessages) => [...prevMessages, botResponse]);
         } catch (error) {
             console.error('Error sending message:', error);
         }
-    };
-
-    const sendMessageToChatBot = async (message) => {
-        return axios.post('https://example-chatbot-api.com/sendMessage', { message });
     };
 
     // Scrollt automatisch ans Ende des Chats
