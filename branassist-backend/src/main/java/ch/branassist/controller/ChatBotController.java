@@ -9,15 +9,19 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/chatbot")
 public class ChatBotController {
 
-    private final EasyTalkResponse easyTalkResponse = new EasyTalkResponse();
-    private final WeatherResponse weatherResponse = new WeatherResponse();
+    private final EasyTalkResponse easyTalkResponse;
+    private final WeatherResponse weatherResponse;
+
+    public ChatBotController(EasyTalkResponse easyTalkResponse, WeatherResponse weatherResponse) {
+        this.easyTalkResponse = easyTalkResponse;
+        this.weatherResponse = weatherResponse;
+    }
 
     @PostMapping("/message")
     public String handleMessage(@RequestBody ChatRequest request) {
         String userMessage = request.getMessage();
 
-        // Hier kannst du entscheiden, welche Antwortmethode aufzurufen ist
-        if (userMessage.contains("weather")) {
+        if (userMessage.contains("weather") || userMessage.contains("wetter")) {
             return weatherResponse.getWeatherResponse(userMessage);
         } else {
             return easyTalkResponse.generateResponse(userMessage);

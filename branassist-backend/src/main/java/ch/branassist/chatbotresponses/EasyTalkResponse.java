@@ -1,5 +1,8 @@
 package ch.branassist.chatbotresponses;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class EasyTalkResponse {
 
     public String generateResponse(String userMessage) {

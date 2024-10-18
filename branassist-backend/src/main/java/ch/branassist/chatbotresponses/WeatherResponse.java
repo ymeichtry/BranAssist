@@ -1,12 +1,33 @@
 package ch.branassist.chatbotresponses;
 
+import io.github.cdimascio.dotenv.Dotenv;
+import jakarta.annotation.PostConstruct;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
 
+@Component
 public class WeatherResponse {
-
-    private final String apiKey = "dein_api_key";
+    private String apiKey;
     private final RestTemplate restTemplate = new RestTemplate();
+
+    @PostConstruct
+    public void init() {
+        try {
+            Dotenv dotenv = Dotenv.load();
+            this.apiKey = dotenv.get("WEATHER_API_KEY");
+
+            // Debugging-Ausgaben
+            if (apiKey == null || apiKey.isEmpty()) {
+                System.out.println("FEHLER: WEATHER_API_KEY ist null oder leer!");
+            } else {
+                System.out.println("API Key geladen: " + apiKey);
+            }
+        } catch (Exception e) {
+            System.err.println("FEHLER beim Laden der Umgebungsvariablen: " + e.getMessage());
+            e.printStackTrace(); // Gibt den vollständigen Stacktrace aus
+        }
+    }
 
     // Aktuelles Wetter
     public String getCurrentWeather(String location) {
