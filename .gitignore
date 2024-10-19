@@ -1,4 +1,4 @@
 .idea
 .vscode
 node_modules
-*/.env
+branassist-backend/src/main/resources/.env
